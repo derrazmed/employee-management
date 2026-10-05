@@ -412,9 +412,9 @@ The frontend Axios instance uses credentials:
 
 ```javascript
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: "/api",
   withCredentials: true,
-})
+});
 ```
 
 The browser therefore sends the authentication cookies automatically with API requests.
@@ -1093,7 +1093,7 @@ The following are potential future enhancements rather than currently implemente
 
 **Mohamed DERRAZ EL KABIR**
 
-Network and Computer Engineering Student  
+Network and Computer Engineering Graduate  
 Moroccan School of Engineering Sciences (EMSI)
 
 Full Stack Developer
