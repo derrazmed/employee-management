@@ -136,9 +136,9 @@ defineProps({
 </script>
 
 <template>
-  <div>
+  <section class="directory-workspace user-directory">
     <!-- Search and page size -->
-    <div v-if="isSuperAdmin" class="table-toolbar user-table-toolbar">
+    <div v-if="isSuperAdmin" class="directory-toolbar table-toolbar user-table-toolbar">
       <div class="input-group table-search user-search">
         <span class="input-group-text">
           <i class="bi bi-search"></i>
@@ -157,7 +157,7 @@ defineProps({
           <option :value="50">50</option>
         </select>
 
-        <span class="text-muted small">per page</span>
+        <span class="text-muted small">users</span>
       </div>
     </div>
 
@@ -167,17 +167,18 @@ defineProps({
     </div>
 
     <!-- Loading -->
-    <div v-if="loading" class="text-center py-5">
-      <div class="spinner-border text-primary" role="status">
+    <div v-if="loading" class="directory-loading">
+      <div class="spinner-border text-primary mb-2" role="status">
         <span class="visually-hidden"> Loading... </span>
       </div>
+      <div class="text-muted small">Loading users...</div>
     </div>
 
     <!-- Table -->
-    <div v-else-if="hasAccess" class="card table-panel user-table-panel">
+    <div v-else-if="hasAccess" class="directory-panel user-table-panel">
       <div class="table-responsive desktop-user-table">
-        <table class="table table-hover align-middle mb-0 user-data-table">
-          <thead class="table-light">
+        <table class="directory-table table table-hover align-middle mb-0 user-data-table">
+          <thead>
             <tr>
               <th>Name</th>
               <th>Email</th>
@@ -207,12 +208,9 @@ defineProps({
               </td>
 
               <td>
-                <span
-                  v-for="permission in user.permissions"
-                  :key="permission"
-                  class="badge text-bg-light border me-1"
-                >
-                  {{ permission }}
+                <span class="permission-summary">
+                  <i class="bi bi-shield-check"></i>
+                  {{ user.permissions?.length || 0 }} permissions
                 </span>
               </td>
 
@@ -280,7 +278,11 @@ defineProps({
             </tr>
 
             <tr v-if="users.length === 0">
-              <td colspan="6" class="empty-state">No users found.</td>
+              <td colspan="6" class="empty-state">
+                <i class="bi bi-people"></i>
+                <h6 class="mb-1">No users found</h6>
+                <p class="mb-0">{{ search ? 'No users match your search.' : 'There are no users to display.' }}</p>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -366,13 +368,14 @@ defineProps({
         <div v-if="users.length === 0" class="empty-state mobile-user-empty">
           <i class="bi bi-people"></i>
           <h6 class="mb-1">No users found</h6>
+          <p class="mb-0">{{ search ? 'No users match your search.' : 'There are no users to display.' }}</p>
         </div>
       </div>
     </div>
 
     <!-- Pagination -->
     <div v-if="totalPages > 0" class="table-pagination user-table-pagination">
-      <div class="text-muted small">Showing {{ users.length }} of {{ totalElements }} users</div>
+      <div class="text-muted small">Showing {{ currentPage * pageSize + 1 }}–{{ Math.min((currentPage + 1) * pageSize, totalElements) }} of {{ totalElements }} users</div>
 
       <nav>
         <ul class="pagination pagination-sm mb-0">
@@ -431,7 +434,7 @@ defineProps({
       @close="closeDeleteConfirmation"
       @confirm="deleteUser"
     />
-  </div>
+  </section>
 </template>
 
 <style scoped>
@@ -447,11 +450,27 @@ defineProps({
   display: none;
 }
 
+.directory-workspace { display: grid; gap: .75rem; }
+.directory-toolbar { padding: 0 0 .75rem; border: 0; background: transparent; }
+.directory-panel { overflow: hidden; border: 1px solid var(--color-border); background: var(--color-surface); }.directory-loading { padding: 3.5rem 1rem; border: 1px solid var(--color-border); background: var(--color-surface); text-align: center; }.directory-table thead th { padding: .72rem 1rem; }.directory-table tbody td { padding: .85rem 1rem; }
+.permission-summary { display: inline-flex; align-items: center; gap: .35rem; color: #526075; font-size: .8rem; }.permission-summary i { color: var(--app-primary); }
+
+@media (min-width: 768px) {
+  .user-table-panel .table-responsive { overflow-x: auto; }
+  .user-table-panel .directory-table { min-width: 900px; }
+  .user-table-panel .directory-table tbody tr { transition: background .15s ease; }
+  .user-table-panel .directory-table tbody tr:hover { background:#f7f8fc; }
+  .user-table-panel .directory-table td:first-child { padding-left: 22px; }
+  .user-table-panel .directory-table td:last-child { padding-right: 22px; }
+}
+
 @media (max-width: 767.98px) {
   .user-table-toolbar {
     align-items: stretch;
     flex-direction: column;
   }
+
+  .directory-toolbar { border-radius: 0; }
 
   .user-search {
     width: 100%;

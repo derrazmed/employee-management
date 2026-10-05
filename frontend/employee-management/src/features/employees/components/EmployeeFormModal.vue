@@ -448,3 +448,7 @@ const submitForm = async () => {
   <!-- Modal backdrop -->
   <div v-if="show && canManageEmployee" class="modal-backdrop fade show"></div>
 </template>
+
+<style scoped>
+.modal-title i { color: var(--app-primary); }.modal-body h6 { margin-top: .15rem; color: #526075; font-size: .72rem; font-weight: 700 !important; letter-spacing: .07em; text-transform: uppercase; }.modal-body hr { margin-block: 1.75rem !important; border-color: var(--app-border); opacity: 1; }.modal-footer { justify-content: flex-end; gap: .5rem; }.modal-footer .btn { min-width: 112px; }
+</style>

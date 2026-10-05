@@ -78,7 +78,12 @@ watch(
           </div>
 
           <!-- User -->
-          <div v-else-if="user">
+          <div v-else-if="user" class="user-profile">
+            <div class="user-profile-hero">
+              <span class="user-profile-avatar">{{ user.name?.charAt(0) || 'U' }}</span>
+              <div><h6>{{ user.name }}</h6><p>{{ user.email }}</p></div>
+            </div>
+            <div class="user-profile-grid">
             <div class="mb-3">
               <label class="text-muted small"> Name </label>
 
@@ -118,7 +123,7 @@ watch(
               </div>
             </div>
 
-            <div>
+            <div class="user-permissions-block">
               <label class="text-muted small"> Permissions </label>
 
               <div class="mt-1">
@@ -131,6 +136,7 @@ watch(
                 </span>
               </div>
             </div>
+            </div>
           </div>
         </div>
 
@@ -142,3 +148,7 @@ watch(
     </div>
   </div>
 </template>
+
+<style scoped>
+.user-profile-hero { display: flex; align-items: center; gap: .85rem; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--app-border); }.user-profile-avatar { display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 6px; background: #eaf1fb; color: var(--app-primary); font-weight: 700; }.user-profile-hero h6 { margin: 0; color: var(--app-text); font-size: 1rem; font-weight: 700; }.user-profile-hero p { margin: .12rem 0 0; color: var(--app-text-muted); font-size: .8rem; }.user-profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .25rem 1.5rem; }.user-profile-grid label { display: block; margin-bottom: .25rem; color: #667085; font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }.user-permissions-block { grid-column: 1 / -1; padding-top: .9rem; border-top: 1px solid var(--app-border); } @media (max-width: 575.98px) { .user-profile-grid { grid-template-columns: 1fr; } }
+</style>

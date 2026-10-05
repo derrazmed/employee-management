@@ -90,17 +90,18 @@ const toggleUserStatus = async (user) => {
 </script>
 
 <template>
-  <div class="container-fluid py-4">
+  <div class="container-fluid app-page">
     <div class="page-heading">
       <div>
+        <span class="page-kicker">Access control</span>
         <h1>Users</h1>
 
         <p>Manage application users and their permissions.</p>
       </div>
 
       <button v-if="isSuperAdmin" class="btn btn-primary" @click="openCreate">
-        <i class="bi bi-plus-lg me-2"></i>
-        Add User
+        <i class="bi bi-plus-lg"></i>
+        <span>Add User</span>
       </button>
     </div>
 

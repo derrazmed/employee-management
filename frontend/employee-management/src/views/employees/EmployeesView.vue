@@ -97,10 +97,11 @@ const handleEmployeeSaved = async () => {
 </script>
 
 <template>
-  <div class="container-fluid py-4">
+  <div class="container-fluid app-page">
     <!-- Page header -->
     <div class="page-heading">
       <div>
+        <span class="page-kicker">People directory</span>
         <h1>Employees</h1>
 
         <p>Manage employee records and information.</p>
@@ -113,8 +114,8 @@ const handleEmployeeSaved = async () => {
         class="btn btn-primary"
         @click="openCreateModal"
       >
-        <i class="bi bi-person-plus me-2"></i>
-        Add Employee
+        <i class="bi bi-person-plus"></i>
+        <span>Add Employee</span>
       </button>
     </div>
 

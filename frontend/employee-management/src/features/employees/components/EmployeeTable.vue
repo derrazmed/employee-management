@@ -132,8 +132,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
-    <div class="table-toolbar employee-table-toolbar">
+  <section class="directory-workspace">
+    <div class="directory-toolbar table-toolbar employee-table-toolbar">
       <div class="input-group table-search employee-search">
         <span class="input-group-text">
           <i class="bi bi-search"></i>
@@ -171,11 +171,11 @@ onMounted(() => {
           <option :value="20">20</option>
           <option :value="50">50</option>
         </select>
-        <span class="text-muted small">per page</span>
+        <span class="text-muted small">employees</span>
       </div>
     </div>
 
-    <div v-if="loading" class="card border-0 shadow-sm">
+    <div v-if="loading" class="directory-loading">
       <div class="card-body py-5 text-center">
         <div class="spinner-border text-primary mb-3" role="status">
           <span class="visually-hidden">Loading...</span>
@@ -191,11 +191,11 @@ onMounted(() => {
       </div>
     </div>
 
-    <div v-else class="card table-panel employee-panel">
-      <div class="card-body p-0 desktop-employee-table">
+    <div v-else class="directory-panel employee-panel">
+      <div class="desktop-employee-table">
         <div class="table-responsive">
-          <table class="table table-hover align-middle mb-0 employee-data-table">
-            <thead class="table-light">
+          <table class="directory-table table table-hover align-middle mb-0 employee-data-table">
+            <thead>
               <tr>
                 <th class="ps-3">Photo</th>
                 <th>Full Name</th>
@@ -302,7 +302,10 @@ onMounted(() => {
 
           <div class="mobile-employee-info">
             <div class="mobile-employee-name">{{ employee.firstName }} {{ employee.lastName }}</div>
-            <div class="mobile-employee-title">{{ employee.jobTitle || 'Employee' }}</div>
+            <div class="mobile-employee-email">{{ employee.email || 'No email address' }}</div>
+            <div class="mobile-employee-title">
+              {{ employee.jobTitle || 'Employee' }}<span v-if="employee.department"> · {{ employee.department }}</span>
+            </div>
           </div>
 
           <div
@@ -355,7 +358,7 @@ onMounted(() => {
       <div v-if="totalPages > 0" class="table-pagination">
         <div class="d-flex justify-content-between align-items-center w-100">
           <div class="text-muted small">
-            Showing {{ employees.length }} of {{ totalElements }} employees
+            Showing {{ currentPage * pageSize + 1 }}–{{ Math.min((currentPage + 1) * pageSize, totalElements) }} of {{ totalElements }} employees
           </div>
           <nav v-if="totalPages > 1" aria-label="Employee pagination">
             <ul class="pagination pagination-sm mb-0">
@@ -410,7 +413,7 @@ onMounted(() => {
       @close="closeDeleteConfirmation"
       @confirm="deleteEmployee"
     />
-  </div>
+  </section>
 </template>
 
 <style scoped>
@@ -443,6 +446,22 @@ onMounted(() => {
   display: none;
 }
 
+.directory-workspace { display: grid; gap: .75rem; }
+.directory-toolbar { padding: 0 0 .75rem; border: 0; background: transparent; }
+.directory-panel { overflow: hidden; border: 1px solid var(--color-border); background: var(--color-surface); }
+.directory-loading { padding: 3.5rem 1rem; border: 1px solid var(--app-border); background: var(--app-surface); text-align: center; }
+.directory-table thead th { padding: .72rem 1rem; }.directory-table tbody td { padding: .85rem 1rem; }
+
+@media (min-width: 768px) {
+  .employee-panel .table-responsive { overflow-x: auto; }
+  .employee-panel .directory-table { min-width: 920px; }
+  .employee-panel .directory-table tbody tr { transition: background .15s ease; }
+  .employee-panel .directory-table tbody tr:hover { background: #f7f8fc; }
+  .employee-panel .directory-table td:first-child { padding-left: 22px; }
+  .employee-panel .directory-table td:last-child { padding-right: 22px; }
+  .employee-avatar,.employee-avatar-placeholder { width:42px;height:42px; }
+}
+
 @media (max-width: 767.98px) {
   .desktop-employee-table {
     display: none;
@@ -452,6 +471,9 @@ onMounted(() => {
     align-items: stretch;
     flex-direction: column;
   }
+
+  .directory-toolbar { padding: 0 0 .7rem; border-radius: 0; }
+  .directory-panel { border-radius: 0; }
 
   .employee-search {
     width: 100%;
@@ -514,6 +536,14 @@ onMounted(() => {
     margin-top: 0.2rem;
     color: #687385;
     font-size: 0.75rem;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+  }
+
+  .mobile-employee-email {
+    margin-top: 0.15rem;
+    color: #687385;
+    font-size: 0.72rem;
     line-height: 1.3;
     overflow-wrap: anywhere;
   }

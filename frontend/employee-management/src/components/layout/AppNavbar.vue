@@ -3,144 +3,31 @@ import { useAuthStore } from '@/features/auth/stores/authStore'
 import NotificationBell from '@/features/notifications/components/NotificationBell.vue'
 
 const authStore = useAuthStore()
-
 const emit = defineEmits(['toggle-sidebar'])
-
-const logout = () => {
-  authStore.logout()
-}
+defineProps({ navigationOpen: { type: Boolean, default: true } })
+const logout = () => authStore.logout()
 </script>
 
 <template>
-  <nav class="navbar navbar-light bg-white border-bottom">
-    <div class="container-fluid px-3 px-lg-4">
-      <!-- Sidebar toggle -->
-      <button
-        class="btn sidebar-toggle"
-        type="button"
-        @click="emit('toggle-sidebar')"
-        aria-label="Toggle sidebar"
-      >
-        <i class="bi bi-list"></i>
-      </button>
-
-      <!-- Application name -->
-      <RouterLink to="/" class="navbar-brand ms-2 me-auto">
+  <header class="app-header">
+    <div class="app-header-inner">
+      <button class="btn sidebar-toggle" type="button" aria-label="Toggle navigation" :aria-expanded="navigationOpen" @click="emit('toggle-sidebar')"><i class="bi bi-list"></i></button>
+      <RouterLink to="/employees" class="app-brand">
         <span class="brand-mark"><i class="bi bi-person-vcard-fill"></i></span>
-        <span class="brand-copy">
-          <span>Employee Management</span>
-          <small>PEOPLE OPERATIONS</small>
-        </span>
+        <span class="brand-copy"><strong>Employee Management</strong><small>PEOPLE OPERATIONS</small></span>
       </RouterLink>
-
-      <div class="d-flex align-items-center gap-2 ms-auto">
+      <div class="app-header-actions">
         <NotificationBell v-if="authStore.user?.userType === 'SUPER_ADMIN'" />
-
-        <div class="navbar-profile d-none d-sm-flex align-items-center gap-2">
-          <span class="navbar-profile-icon"><i class="bi bi-person-fill"></i></span>
-          <span class="navbar-user text-truncate">{{ authStore.user?.name }}</span>
+        <div class="navbar-profile d-none d-md-flex">
+          <span class="navbar-profile-icon">{{ authStore.user?.name?.charAt(0) || 'U' }}</span>
+          <span class="navbar-user"><strong class="text-truncate">{{ authStore.user?.name }}</strong><small>{{ authStore.user?.userType === 'SUPER_ADMIN' ? 'Administrator' : 'Team member' }}</small></span>
         </div>
-
-        <button
-          class="btn btn-outline-secondary btn-sm navbar-logout"
-          type="button"
-          @click="logout"
-        >
-          <i class="bi bi-box-arrow-right me-sm-1"></i>
-          <span class="d-none d-sm-inline">Logout</span>
-          <span class="visually-hidden d-sm-none">Logout</span>
-        </button>
+        <button class="btn btn-outline-secondary btn-sm navbar-logout" type="button" @click="logout"><i class="bi bi-box-arrow-right"></i><span class="d-none d-sm-inline">Logout</span><span class="visually-hidden d-sm-none">Logout</span></button>
       </div>
     </div>
-  </nav>
+  </header>
 </template>
 
 <style scoped>
-.sidebar-toggle {
-  display: inline-flex;
-  width: 38px;
-  height: 38px;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  border: 1px solid transparent;
-  color: #4b5563;
-  font-size: 1.25rem;
-}
-
-.sidebar-toggle:hover {
-  border-color: #e1e5eb;
-  background-color: #f4f6f8;
-}
-
-.navbar-brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.65rem;
-  letter-spacing: 0;
-}
-
-.brand-mark {
-  display: inline-flex;
-  width: 34px;
-  height: 34px;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid #d7e1f0;
-  border-radius: 7px;
-  background: #f1f5fb;
-  color: #2457a6;
-  font-size: 1rem;
-}
-
-.brand-copy {
-  display: flex;
-  flex-direction: column;
-  gap: 0.08rem;
-}
-
-.brand-copy small {
-  color: #778295;
-  font-size: 0.56rem;
-  font-weight: 700;
-  letter-spacing: 0.09em;
-}
-
-.navbar-user {
-  max-width: 190px;
-  color: #394456;
-  font-size: 0.82rem;
-  font-weight: 600;
-}
-
-.navbar-profile {
-  min-height: 38px;
-  padding-inline: 0.7rem;
-  border-left: 1px solid #e5e8ed;
-}
-
-.navbar-profile-icon {
-  display: inline-flex;
-  width: 28px;
-  height: 28px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: #eef1f5;
-  color: #526075;
-}
-
-.navbar-logout {
-  min-width: 38px;
-}
-
-@media (max-width: 575.98px) {
-  .brand-copy small {
-    display: none;
-  }
-
-  .navbar-brand {
-    font-size: 0.88rem;
-  }
-}
+.app-header { position: sticky; top: 0; z-index: 1030; height: 64px; border-bottom: 1px solid var(--app-border); background: var(--app-surface); }.app-header-inner { display: flex; height: 100%; align-items: center; padding: 0 24px; }.sidebar-toggle { width: 38px; height: 38px; min-height: 38px; padding: 0; border: 1px solid transparent; color: #475467; font-size: 1.25rem; }.sidebar-toggle:hover { border-color: var(--app-border); background: #f4f6f9; }.app-brand { display: inline-flex; align-items: center; gap: .65rem; margin: 0 auto 0 .5rem; color: var(--app-text); text-decoration: none; }.brand-mark { display: inline-flex; width: 34px; height: 34px; align-items: center; justify-content: center; border: 1px solid #d4e0f0; border-radius: 6px; background: #edf3fb; color: var(--app-primary); font-size: 1rem; }.brand-copy { display: flex; flex-direction: column; gap: .04rem; }.brand-copy strong { font-size: .93rem; font-weight: 700; }.brand-copy small { color: #778295; font-size: .56rem; font-weight: 700; letter-spacing: .09em; }.app-header-actions { display: flex; align-items: center; gap: .5rem; }.navbar-profile { min-height: 40px; align-items: center; gap: .55rem; padding-left: .85rem; border-left: 1px solid #e5e8ed; }.navbar-profile-icon { display: inline-flex; width: 28px; height: 28px; align-items: center; justify-content: center; border-radius: 6px; background: #e9f0fa; color: var(--app-primary); font-size: .76rem; font-weight: 700; }.navbar-user { display: flex; max-width: 180px; flex-direction: column; color: #394456; font-size: .78rem; line-height: 1.2; }.navbar-user strong { font-weight: 650; }.navbar-user small { color: var(--app-text-muted); font-size: .68rem; }.navbar-logout { gap: .35rem; } @media (max-width: 575.98px) { .app-header-inner { padding-inline: 12px; }.brand-copy small { display: none; }.brand-copy strong { font-size: .82rem; }.app-brand { gap: .5rem; }.brand-mark { width: 32px; height: 32px; } }
 </style>

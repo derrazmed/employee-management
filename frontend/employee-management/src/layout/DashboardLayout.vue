@@ -1,20 +1,39 @@
 <script setup>
-import { ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import AppNavbar from '@/components/layout/AppNavbar.vue'
 import AppSidebar from '@/components/layout/AppSidebar.vue'
 
 const sidebarCollapsed = ref(false)
 
+const syncNavigation = () => {
+  if (window.innerWidth < 768) sidebarCollapsed.value = true
+}
+
 const toggleSidebar = () => {
   sidebarCollapsed.value = !sidebarCollapsed.value
 }
+
+onMounted(() => {
+  syncNavigation()
+  window.addEventListener('resize', syncNavigation)
+})
+
+onBeforeUnmount(() => window.removeEventListener('resize', syncNavigation))
 </script>
 
 <template>
   <div class="dashboard-layout">
-    <AppNavbar @toggle-sidebar="toggleSidebar" />
+    <AppNavbar :navigation-open="!sidebarCollapsed" @toggle-sidebar="toggleSidebar" />
 
     <AppSidebar :collapsed="sidebarCollapsed" />
+
+    <button
+      v-if="!sidebarCollapsed"
+      type="button"
+      class="mobile-nav-scrim"
+      aria-label="Close navigation"
+      @click="sidebarCollapsed = true"
+    ></button>
 
     <main class="main-content" :class="{ 'sidebar-collapsed': sidebarCollapsed }">
       <div class="main-content-inner">
@@ -27,7 +46,7 @@ const toggleSidebar = () => {
 <style scoped>
 .main-content {
   margin-left: 248px;
-  padding: 28px 32px;
+  padding: 32px 40px 48px;
 
   min-height: calc(100vh - 64px);
 
@@ -39,17 +58,20 @@ const toggleSidebar = () => {
 }
 
 .main-content-inner {
-  width: min(100%, 1560px);
+  width: min(100%, 1360px);
   margin-inline: auto;
 }
 
+.mobile-nav-scrim { display: none; }
+
 @media (max-width: 767.98px) {
+  .mobile-nav-scrim { position: fixed; inset: 64px 0 0; z-index: 1010; display: block; width: 100%; padding: 0; border: 0; background: rgba(25, 30, 43, .28); }
   .main-content,
   .main-content.sidebar-collapsed {
     width: 100%;
     max-width: 100%;
     margin-left: 0 !important;
-    padding: 22px 16px;
+    padding: 24px 16px 32px;
     box-sizing: border-box;
   }
 

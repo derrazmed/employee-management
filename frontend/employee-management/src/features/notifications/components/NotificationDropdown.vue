@@ -114,6 +114,7 @@ const deleteNotification = async (notification) => {
         </div>
 
         <button
+          v-if="!notification.read"
           type="button"
           class="notification-open notification-content"
           @click="handleNotificationClick(notification)"
@@ -160,8 +161,8 @@ const deleteNotification = async (notification) => {
   right: 0;
   width: min(380px, calc(100vw - 24px));
   background: #fff;
-  border: 1px solid #dee2e6;
-  border-radius: 7px;
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius);
   box-shadow: 0 8px 22px rgba(31, 41, 55, 0.14);
   overflow: hidden;
   z-index: 1050;
@@ -173,7 +174,13 @@ const deleteNotification = async (notification) => {
   justify-content: space-between;
   gap: 0.75rem;
   padding: 12px 14px;
-  border-bottom: 1px solid #e1e5eb;
+  border-bottom: 1px solid var(--app-border);
+}
+
+.notification-header h6 {
+  color: var(--app-text);
+  font-size: 0.9rem;
+  font-weight: 700;
 }
 
 .notification-list {
@@ -186,7 +193,7 @@ const deleteNotification = async (notification) => {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  padding: 12px 13px;
+  padding: 13px 14px;
   border: 0;
   border-left: 3px solid transparent;
   border-bottom: 1px solid #f0f0f0;
@@ -228,8 +235,9 @@ const deleteNotification = async (notification) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  background: #e9ecef;
+  border-radius: 5px;
+  background: #edf1f6;
+  color: #526b8d;
 }
 
 .notification-content {
@@ -238,6 +246,7 @@ const deleteNotification = async (notification) => {
 }
 
 .notification-message {
+  color: #475467;
   font-size: 0.82rem;
   line-height: 1.4;
   margin-bottom: 4px;

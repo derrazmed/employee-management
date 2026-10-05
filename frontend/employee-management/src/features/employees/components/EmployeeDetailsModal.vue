@@ -223,9 +223,9 @@ watch(
           <!-- Details -->
           <div v-else-if="employeeDetails">
             <!-- Employee header -->
-            <div class="d-flex align-items-center mb-4">
+            <div class="employee-profile-hero">
               <!-- Photo -->
-              <div class="me-4">
+              <div class="employee-profile-photo">
                 <img
                   v-if="employeeDetails.photoObjectName"
                   :src="`/api/employees/${employeeDetails.id}/photo`"
@@ -239,25 +239,25 @@ watch(
               </div>
 
               <!-- Name -->
-              <div>
+              <div class="employee-profile-title">
                 <h4 class="mb-1">
                   {{ employeeDetails.firstName }}
                   {{ employeeDetails.lastName }}
                 </h4>
 
-                <div class="text-muted">
+                <div class="employee-profile-role">
                   {{ employeeDetails.jobTitle || 'Employee' }}
                 </div>
 
-                <div class="text-muted small">
+                <div class="employee-profile-department">
                   {{ employeeDetails.department || '—' }}
                 </div>
               </div>
             </div>
 
             <!-- Personal information -->
-            <div class="mb-4">
-              <h6 class="fw-bold border-bottom pb-2 mb-3">Personal Information</h6>
+            <section class="profile-section">
+              <h6>Personal Information</h6>
 
               <div class="row g-3">
                 <div class="col-md-6">
@@ -292,11 +292,11 @@ watch(
                   </div>
                 </div>
               </div>
-            </div>
+            </section>
 
             <!-- Employment information -->
-            <div class="mb-4">
-              <h6 class="fw-bold border-bottom pb-2 mb-3">Employment Information</h6>
+            <section class="profile-section">
+              <h6>Employment Information</h6>
 
               <div class="row g-3">
                 <div class="col-md-6">
@@ -335,11 +335,11 @@ watch(
                   </div>
                 </div>
               </div>
-            </div>
+            </section>
 
             <!-- Documents -->
-            <div>
-              <h6 class="fw-bold border-bottom pb-2 mb-3">Documents</h6>
+            <section class="profile-section profile-documents">
+              <h6>Documents</h6>
 
               <div v-if="fileError" class="alert alert-danger">
                 {{ fileError }}
@@ -401,7 +401,7 @@ watch(
                   Download Contract
                 </button>
               </div>
-            </div>
+            </section>
           </div>
         </div>
 
@@ -425,6 +425,7 @@ watch(
 </template>
 
 <style scoped>
+.modal-dialog { width: min(620px, 100%); height: 100%; max-height: 100%; margin: 0 0 0 auto; transform: none !important; }.modal-content { min-height: 100%; border-radius: 0; }.modal-header { padding: 20px 24px; }.modal-body { padding: 26px 24px; }.modal-footer { padding: 16px 24px; }
 .employee-photo {
   width: 100px;
   height: 100px;
@@ -444,4 +445,7 @@ watch(
   align-items: center;
   justify-content: center;
 }
+
+.employee-profile-hero { display: flex; align-items: center; gap: 1.25rem; padding: 0 0 1.5rem; border-bottom: 1px solid var(--app-border); }.employee-profile-photo { flex: 0 0 auto; }.employee-profile-title h4 { color: var(--app-text); font-size: 1.25rem; font-weight: 700; }.employee-profile-role { color: #344054; font-weight: 600; }.employee-profile-department { margin-top: .18rem; color: var(--app-text-muted); font-size: .84rem; }.profile-section { margin-top: 1.5rem; }.profile-section h6 { margin: 0 0 1rem; color: #526075; font-size: .72rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }.profile-section .text-muted.small { margin-bottom: .22rem; font-size: .72rem; text-transform: uppercase; letter-spacing: .035em; }.profile-section .fw-semibold { color: var(--app-text); font-size: .9rem; }.profile-documents { padding-top: 1.5rem; border-top: 1px solid var(--app-border); }
+@media (max-width: 575.98px) { .modal-dialog { width:100%; }.employee-profile-hero { align-items: flex-start; gap: .85rem; }.employee-photo, .employee-photo-placeholder { width: 68px; height: 68px; }.employee-profile-title h4 { font-size: 1.05rem; } }
 </style>

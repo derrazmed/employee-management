@@ -3,92 +3,15 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/features/auth/stores/authStore'
 import PasswordInput from '@/components/common/PasswordInput.vue'
-
-const router = useRouter()
-const authStore = useAuthStore()
-
-const email = ref('')
-const password = ref('')
-const error = ref('')
-
-const login = async () => {
-  try {
-    await authStore.login(email.value, password.value)
-
-    await router.push('/')
-  } catch (err) {
-    console.error('Login failed:', err)
-    error.value = err.response?.data?.message || 'Login failed. Please check your credentials.'
-  }
-}
+const router = useRouter(); const authStore = useAuthStore(); const email = ref(''); const password = ref(''); const error = ref('')
+const login = async () => { try { await authStore.login(email.value,password.value); await router.push('/') } catch (err) { error.value=err.response?.data?.message||'Login failed. Please check your credentials.' } }
 </script>
-
 <template>
-  <div class="auth-page">
-    <div class="auth-card">
-      <h2 class="text-center mb-4">Login</h2>
-
-      <form @submit.prevent="login">
-        <div class="mb-3">
-          <label for="email" class="form-label"> Email </label>
-
-          <input
-            id="email"
-            v-model="email"
-            type="email"
-            class="form-control"
-            placeholder="Enter your email"
-            required
-          />
-        </div>
-
-        <div class="mb-3">
-          <label for="password" class="form-label"> Password </label>
-          <PasswordInput
-            id="password"
-            v-model="password"
-            placeholder="Enter your password"
-            autocomplete-mode="current-password"
-            required
-          />
-        </div>
-        <div class="text-end mb-3">
-          <RouterLink to="/forgot-password" class="forgot-password-link">
-            Forgot your password?
-          </RouterLink>
-        </div>
-        <div v-if="error" class="alert alert-danger" role="alert">
-          {{ error }}
-        </div>
-        <button type="submit" class="btn btn-primary w-100">Login</button>
-      </form>
-
-      <div class="text-center mt-3">
-        Don't have an account?
-
-        <RouterLink to="/register"> Register </RouterLink>
-      </div>
-    </div>
-  </div>
+  <main class="auth-experience">
+    <section class="auth-story"><div class="auth-story-content"><span class="auth-symbol"><i class="bi bi-people-fill"></i></span><span class="auth-eyebrow">Employee Management</span><h1>People work<br>better together.</h1><p>A focused workspace for the people and access that keep your organization moving.</p><div class="story-note"><i class="bi bi-shield-check"></i><span>Secure, role-based workspace</span></div></div><div class="story-shape shape-one"></div><div class="story-shape shape-two"></div></section>
+    <section class="auth-form-side"><div class="auth-form-wrap"><RouterLink to="/login" class="auth-mobile-brand"><i class="bi bi-people-fill"></i> Employee Management</RouterLink><div class="auth-intro"><span class="auth-eyebrow">Workspace access</span><h2>Welcome back</h2><p>Sign in to continue to your people workspace.</p></div><form @submit.prevent="login" class="auth-form"><label>Email address<input id="email" v-model="email" type="email" class="form-control" placeholder="you@company.com" required></label><label>Password<PasswordInput id="password" v-model="password" placeholder="Enter your password" autocomplete-mode="current-password" required /></label><div class="auth-links"><RouterLink to="/forgot-password">Forgot password?</RouterLink></div><div v-if="error" class="alert alert-danger mb-0" role="alert">{{ error }}</div><button type="submit" class="btn btn-primary auth-submit">Sign in <i class="bi bi-arrow-right"></i></button></form><p class="auth-switch">New here? <RouterLink to="/register">Create an account</RouterLink></p></div></section>
+  </main>
 </template>
-
 <style scoped>
-.auth-page {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding-top: 60px;
-  background-color: #f8f9fa;
-}
-
-.auth-card {
-  width: 100%;
-  max-width: 400px;
-  padding: 30px;
-  background-color: #ffffff;
-  border: 1px solid #dee2e6;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
+.auth-experience{display:grid;min-height:100vh;grid-template-columns:minmax(420px,1.05fr) minmax(420px,.95fr);background:var(--color-surface)}.auth-story{position:relative;display:flex;align-items:center;overflow:hidden;padding:clamp(48px,8vw,120px);background:#28375d;color:#fff}.auth-story-content{position:relative;z-index:1;max-width:470px}.auth-symbol{display:inline-flex;width:48px;height:48px;align-items:center;justify-content:center;margin-bottom:32px;border:1px solid rgba(255,255,255,.28);border-radius:9px;background:rgba(255,255,255,.1);font-size:1.25rem}.auth-eyebrow{display:block;margin-bottom:14px;color:#d78351;font-size:.7rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase}.auth-story h1{margin:0;font-size:clamp(2.5rem,5vw,4.5rem);font-weight:730;letter-spacing:-.065em;line-height:.96}.auth-story p{max-width:390px;margin:24px 0 36px;color:#d6dbea;font-size:1.03rem;line-height:1.65}.story-note{display:flex;align-items:center;gap:9px;color:#e0e5f0;font-size:.8rem;font-weight:600}.story-note i{color:#efae7b}.story-shape{position:absolute;border:1px solid rgba(255,255,255,.11);border-radius:50%}.shape-one{width:470px;height:470px;right:-130px;bottom:-160px}.shape-two{width:270px;height:270px;right:18%;top:-140px}.auth-form-side{display:flex;align-items:center;justify-content:center;padding:48px}.auth-form-wrap{width:min(100%,410px)}.auth-mobile-brand{display:none}.auth-intro h2{margin:0 0 8px;color:var(--color-text);font-size:2rem;font-weight:750;letter-spacing:-.045em}.auth-intro p{margin:0;color:var(--color-text-secondary)}.auth-form{display:grid;gap:18px;margin-top:34px}.auth-form label{display:grid;gap:7px;color:#3e4656;font-size:.78rem;font-weight:700}.auth-links{text-align:right;font-size:.78rem;font-weight:650}.auth-submit{width:100%;margin-top:2px}.auth-switch{margin:26px 0 0;color:var(--color-text-secondary);font-size:.82rem;text-align:center}.auth-switch a{font-weight:700;text-decoration:none}@media(max-width:800px){.auth-experience{display:block}.auth-story{display:none}.auth-form-side{min-height:100vh;padding:28px 22px}.auth-mobile-brand{display:inline-flex;align-items:center;gap:8px;margin-bottom:56px;color:var(--color-text);font-size:.85rem;font-weight:750;text-decoration:none}.auth-mobile-brand i{color:var(--color-primary)}}
 </style>

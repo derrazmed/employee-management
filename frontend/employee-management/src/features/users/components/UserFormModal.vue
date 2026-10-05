@@ -1,5 +1,6 @@
 <script setup>
 import { ref, watch } from 'vue'
+import PasswordInput from '@/components/common/PasswordInput.vue'
 
 const props = defineProps({
   show: {
@@ -92,7 +93,13 @@ const submit = () => {
             <div v-if="!isEditing" class="mb-3">
               <label class="form-label"> Password </label>
 
-              <input v-model="password" type="password" class="form-control" required />
+              <PasswordInput
+                id="new-user-password"
+                v-model="password"
+                placeholder="Enter a temporary password"
+                autocomplete-mode="new-password"
+                required
+              />
             </div>
 
             <!-- User Type -->

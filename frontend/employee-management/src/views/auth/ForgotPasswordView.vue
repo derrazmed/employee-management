@@ -254,28 +254,29 @@ const goBack = () => {
   align-items: center;
   justify-content: center;
   padding: 2rem 1rem;
-  background: #f8f9fa;
+  background: var(--app-background);
 }
 
 .forgot-password-card {
   width: 100%;
   max-width: 440px;
   padding: 2rem;
-  background: #ffffff;
-  border: 1px solid #dee2e6;
-  border-radius: 8px;
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius);
+  box-shadow: 0 8px 24px rgba(31, 41, 55, 0.06);
 }
 
 .page-title {
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: #212529;
+  color: var(--app-text);
 }
 
 .page-subtitle {
   margin: 0;
-  color: #6c757d;
+  color: var(--app-text-muted);
   font-size: 0.9rem;
 }
 
@@ -309,13 +310,13 @@ const goBack = () => {
 }
 
 .progress-step.active {
-  color: #0d6efd;
+  color: var(--app-primary);
 }
 
 .progress-step.active span {
   color: #ffffff;
-  background: #0d6efd;
-  border-color: #0d6efd;
+  background: var(--app-primary);
+  border-color: var(--app-primary);
 }
 
 .progress-line {

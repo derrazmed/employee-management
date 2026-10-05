@@ -12,24 +12,21 @@
 
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-
-  padding-top: 60px;
-
-  background-color: #f8f9fa;
+  align-items: center;
+  padding: 2rem 1rem;
+  background: var(--app-background);
 }
 
 .auth-card {
   width: 100%;
   max-width: 400px;
 
-  padding: 30px;
+  padding: 2rem;
 
   background-color: #ffffff;
 
-  border: 1px solid #dee2e6;
-  border-radius: 8px;
-
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius);
+  box-shadow: 0 8px 24px rgba(31, 41, 55, 0.06);
 }
 </style>
