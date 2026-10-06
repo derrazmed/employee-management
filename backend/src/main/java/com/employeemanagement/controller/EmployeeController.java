@@ -1,6 +1,7 @@
 package com.employeemanagement.controller;
 
 import com.employeemanagement.dto.ApiResponse;
+import com.employeemanagement.dto.employee.EmployeeFiltersResponse;
 import com.employeemanagement.dto.employee.EmployeeRequest;
 import com.employeemanagement.dto.employee.EmployeeResponse;
 import com.employeemanagement.service.EmployeeService;
@@ -39,6 +40,8 @@ public class EmployeeController {
     @GetMapping
     public ResponseEntity<ApiResponse<Page<EmployeeResponse>>> getEmployees(
             @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "") String department,
+            @RequestParam(defaultValue = "") String jobTitle,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy,
@@ -57,13 +60,25 @@ public class EmployeeController {
         );
 
         Page<EmployeeResponse> employees =
-                employeeService.getEmployees(search, pageable);
+                employeeService.getEmployees(search, department, jobTitle, pageable);
 
         return ResponseEntity.ok(
                 ApiResponse.success(
                         HttpStatus.OK.value(),
                         "Employees retrieved successfully",
                         employees
+                )
+        );
+    }
+
+    @GetMapping("/filters")
+    public ResponseEntity<ApiResponse<EmployeeFiltersResponse>> getEmployeeFilters() {
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        HttpStatus.OK.value(),
+                        "Employee filters retrieved successfully",
+                        employeeService.getEmployeeFilters()
                 )
         );
     }

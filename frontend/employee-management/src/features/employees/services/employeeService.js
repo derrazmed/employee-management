@@ -1,14 +1,22 @@
 import api from '@/services/Axios'
 
 export const employeeService = {
-  async getEmployees(page = 0, size = 10, search = '') {
+  async getEmployees(page = 0, size = 10, search = '', filters = {}) {
     const response = await api.get('/employees', {
       params: {
         page,
         size,
         search,
+        department: filters.department || '',
+        jobTitle: filters.jobTitle || '',
       },
     })
+
+    return response.data
+  },
+
+  async getFilters() {
+    const response = await api.get('/employees/filters')
 
     return response.data
   },

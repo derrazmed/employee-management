@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { employeeService } from '../services/employeeService'
+import { ESCAPE_PRIORITY, useEscapeDismiss } from '@/composables/useEscapeDismiss'
 
 const props = defineProps({
   show: {
@@ -25,6 +26,24 @@ const fileLoading = ref(false)
 const fileError = ref('')
 
 const cvAction = ref('')
+
+const closeModal = () => {
+  if (fileLoading.value || cvAction.value) {
+    return
+  }
+
+  employeeDetails.value = null
+  error.value = ''
+  fileError.value = ''
+
+  emit('close')
+}
+
+useEscapeDismiss(
+  () => props.show,
+  closeModal,
+  ESCAPE_PRIORITY.MODAL,
+)
 
 const loadEmployee = async () => {
   if (!props.employee?.id) {
@@ -154,18 +173,6 @@ const downloadContract = async () => {
   } finally {
     fileLoading.value = false
   }
-}
-
-const closeModal = () => {
-  if (fileLoading.value || cvAction.value) {
-    return
-  }
-
-  employeeDetails.value = null
-  error.value = ''
-  fileError.value = ''
-
-  emit('close')
 }
 
 watch(
@@ -431,21 +438,21 @@ watch(
   height: 100px;
   object-fit: cover;
   border-radius: 50%;
-  border: 3px solid #dee2e6;
+  border: 3px solid var(--color-border);
 }
 
 .employee-photo-placeholder {
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  border: 3px solid #dee2e6;
-  background-color: #f8f9fa;
+  border: 3px solid var(--color-border);
+  background-color: var(--color-surface-muted);
 
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.employee-profile-hero { display: flex; align-items: center; gap: 1.25rem; padding: 0 0 1.5rem; border-bottom: 1px solid var(--app-border); }.employee-profile-photo { flex: 0 0 auto; }.employee-profile-title h4 { color: var(--app-text); font-size: 1.25rem; font-weight: 700; }.employee-profile-role { color: #344054; font-weight: 600; }.employee-profile-department { margin-top: .18rem; color: var(--app-text-muted); font-size: .84rem; }.profile-section { margin-top: 1.5rem; }.profile-section h6 { margin: 0 0 1rem; color: #526075; font-size: .72rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }.profile-section .text-muted.small { margin-bottom: .22rem; font-size: .72rem; text-transform: uppercase; letter-spacing: .035em; }.profile-section .fw-semibold { color: var(--app-text); font-size: .9rem; }.profile-documents { padding-top: 1.5rem; border-top: 1px solid var(--app-border); }
+.employee-profile-hero { display: flex; align-items: center; gap: 1.25rem; padding: 0 0 1.5rem; border-bottom: 1px solid var(--app-border); }.employee-profile-photo { flex: 0 0 auto; }.employee-profile-title h4 { color: var(--app-text); font-size: 1.25rem; font-weight: 700; }.employee-profile-role { color: var(--color-text-body); font-weight: 600; }.employee-profile-department { margin-top: .18rem; color: var(--app-text-muted); font-size: .84rem; }.profile-section { margin-top: 1.5rem; }.profile-section h6 { margin: 0 0 1rem; color: var(--color-text-secondary); font-size: .72rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }.profile-section .text-muted.small { margin-bottom: .22rem; font-size: .72rem; text-transform: uppercase; letter-spacing: .035em; }.profile-section .fw-semibold { color: var(--app-text); font-size: .9rem; }.profile-documents { padding-top: 1.5rem; border-top: 1px solid var(--app-border); }
 @media (max-width: 575.98px) { .modal-dialog { width:100%; }.employee-profile-hero { align-items: flex-start; gap: .85rem; }.employee-photo, .employee-photo-placeholder { width: 68px; height: 68px; }.employee-profile-title h4 { font-size: 1.05rem; } }
 </style>

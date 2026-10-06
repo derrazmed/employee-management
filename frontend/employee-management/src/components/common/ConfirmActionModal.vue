@@ -1,5 +1,6 @@
 <script setup>
 import { nextTick, ref, watch } from 'vue'
+import { ESCAPE_PRIORITY, useEscapeDismiss } from '@/composables/useEscapeDismiss'
 
 const props = defineProps({
   show: {
@@ -67,13 +68,13 @@ const close = () => {
   }
 }
 
-const handleKeydown = (event) => {
-  if (event.key === 'Escape') {
-    event.preventDefault()
-    close()
-    return
-  }
+useEscapeDismiss(
+  () => props.show,
+  close,
+  ESCAPE_PRIORITY.MODAL,
+)
 
+const handleKeydown = (event) => {
   if (event.key !== 'Tab') {
     return
   }
@@ -188,7 +189,7 @@ const handleKeydown = (event) => {
 }
 
 .confirm-action-header h2 {
-  color: #1f2937;
+  color: var(--color-text);
   font-size: 1.05rem;
   font-weight: 650;
 }
@@ -200,10 +201,10 @@ const handleKeydown = (event) => {
   flex: 0 0 38px;
   align-items: center;
   justify-content: center;
-  border: 1px solid #f1c5c9;
+  border: 1px solid var(--color-danger-border);
   border-radius: 50%;
-  background: #fff4f4;
-  color: #b02a37;
+  background: var(--color-danger-soft);
+  color: var(--color-danger-text);
 }
 
 .confirm-action-body {
@@ -213,18 +214,18 @@ const handleKeydown = (event) => {
 
 .confirm-action-message {
   margin: 0;
-  color: #354052;
+  color: var(--color-text-body);
   line-height: 1.5;
   overflow-wrap: anywhere;
 }
 
 .confirm-action-message strong {
-  color: #1f2937;
+  color: var(--color-text);
   font-weight: 650;
 }
 
 .confirm-action-warning {
-  color: #687385;
+  color: var(--color-text-secondary);
   font-size: 0.82rem;
 }
 

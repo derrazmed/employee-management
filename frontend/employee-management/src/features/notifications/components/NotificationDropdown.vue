@@ -1,47 +1,14 @@
 <script setup>
 import { computed, onMounted } from 'vue'
 import { useNotificationStore } from '../stores/notificationStore'
+import { formatRelativeTime } from '@/utils/format'
+import { ESCAPE_PRIORITY, useEscapeDismiss } from '@/composables/useEscapeDismiss'
 
 const notificationStore = useNotificationStore()
 
 const emit = defineEmits(['close', 'open-details'])
 
 const notifications = computed(() => notificationStore.notifications)
-
-const formatDate = (date) => {
-  if (!date) {
-    return ''
-  }
-
-  const notificationDate = new Date(date)
-  const now = new Date()
-
-  const difference = Math.floor((now.getTime() - notificationDate.getTime()) / 1000)
-
-  if (difference < 60) {
-    return 'Just now'
-  }
-
-  const minutes = Math.floor(difference / 60)
-
-  if (minutes < 60) {
-    return `${minutes} min ago`
-  }
-
-  const hours = Math.floor(minutes / 60)
-
-  if (hours < 24) {
-    return `${hours}h ago`
-  }
-
-  const days = Math.floor(hours / 24)
-
-  if (days < 7) {
-    return `${days}d ago`
-  }
-
-  return notificationDate.toLocaleDateString()
-}
 
 const handleNotificationClick = (notification) => {
   emit('open-details', notification)
@@ -63,6 +30,12 @@ onMounted(async () => {
 const deleteNotification = async (notification) => {
   await notificationStore.deleteNotification(notification.id)
 }
+
+useEscapeDismiss(
+  () => true,
+  () => emit('close'),
+  ESCAPE_PRIORITY.DROPDOWN,
+)
 </script>
 
 <template>
@@ -114,9 +87,9 @@ const deleteNotification = async (notification) => {
         </div>
 
         <button
-          v-if="!notification.read"
           type="button"
           class="notification-open notification-content"
+          :aria-label="`Open details for notification ${notification.id}`"
           @click="handleNotificationClick(notification)"
         >
           <span class="notification-message">
@@ -125,14 +98,16 @@ const deleteNotification = async (notification) => {
           </span>
 
           <small class="text-muted">
-            {{ formatDate(notification.createdAt) }}
+            {{ formatRelativeTime(notification.createdAt) }}
           </small>
         </button>
 
         <button
+          v-if="!notification.read"
           type="button"
           class="notification-action"
           title="Mark as read"
+          aria-label="Mark notification as read"
           @click.stop="handleMarkAsRead(notification)"
         >
           <i class="bi bi-check2-circle"></i>
@@ -160,10 +135,10 @@ const deleteNotification = async (notification) => {
   top: calc(100% + 10px);
   right: 0;
   width: min(380px, calc(100vw - 24px));
-  background: #fff;
+  background: var(--color-elevated);
   border: 1px solid var(--app-border);
   border-radius: var(--app-radius);
-  box-shadow: 0 8px 22px rgba(31, 41, 55, 0.14);
+  box-shadow: var(--shadow-menu);
   overflow: hidden;
   z-index: 1050;
 }
@@ -196,22 +171,22 @@ const deleteNotification = async (notification) => {
   padding: 13px 14px;
   border: 0;
   border-left: 3px solid transparent;
-  border-bottom: 1px solid #f0f0f0;
-  background: #fff;
+  border-bottom: 1px solid var(--color-border-soft);
+  background: var(--color-elevated);
   text-align: left;
 }
 
 .notification-item:hover {
-  background: #f8f9fa;
+  background: var(--color-surface-muted);
 }
 
 .notification-item.notification-unread {
-  border-left-color: var(--app-primary);
-  background: #f4f7fb;
+  border-left-color: var(--color-primary-text);
+  background: var(--color-hover-strong);
 }
 
 .notification-open:focus-visible {
-  outline: 2px solid var(--app-primary);
+  outline: 2px solid var(--color-primary-text);
   outline-offset: 2px;
 }
 
@@ -236,8 +211,8 @@ const deleteNotification = async (notification) => {
   align-items: center;
   justify-content: center;
   border-radius: 5px;
-  background: #edf1f6;
-  color: #526b8d;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-text);
 }
 
 .notification-content {
@@ -246,14 +221,14 @@ const deleteNotification = async (notification) => {
 }
 
 .notification-message {
-  color: #475467;
+  color: var(--color-icon);
   font-size: 0.82rem;
   line-height: 1.4;
   margin-bottom: 4px;
 }
 
 .notification-message strong {
-  color: #293447;
+  color: var(--color-text);
   font-weight: 650;
 }
 
@@ -268,17 +243,17 @@ const deleteNotification = async (notification) => {
   border: 1px solid transparent;
   border-radius: 5px;
   background: transparent;
-  color: #7b8493;
+  color: var(--color-text-tertiary);
 }
 
 .notification-delete-button:hover {
-  border-color: #f1c5c9;
-  background: #fff4f4;
-  color: #b02a37;
+  border-color: var(--color-danger-border);
+  background: var(--color-danger-soft);
+  color: var(--color-danger-text);
 }
 
 .notification-delete-button:focus-visible {
-  outline: 2px solid var(--app-primary);
+  outline: 2px solid var(--color-primary-text);
   outline-offset: 1px;
 }
 
@@ -303,7 +278,7 @@ const deleteNotification = async (notification) => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #6c757d;
+  color: var(--color-text-secondary);
 }
 
 .notification-actions {
@@ -320,18 +295,18 @@ const deleteNotification = async (notification) => {
   justify-content: center;
   border: none;
   background: transparent;
-  color: #6c757d;
+  color: var(--color-text-secondary);
   padding: 0;
   border-radius: 4px;
   cursor: pointer;
 }
 
 .notification-action:hover {
-  color: #0d6efd;
-  background: #f1f3f5;
+  color: var(--color-primary-text);
+  background: var(--color-hover-strong);
 }
 
 .notification-action.delete:hover {
-  color: #dc3545;
+  color: var(--color-danger-text);
 }
 </style>

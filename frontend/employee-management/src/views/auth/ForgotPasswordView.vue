@@ -291,7 +291,7 @@ const goBack = () => {
   flex-direction: column;
   align-items: center;
   gap: 0.25rem;
-  color: #adb5bd;
+  color: var(--color-text-tertiary);
 }
 
 .progress-step span {
@@ -300,7 +300,7 @@ const goBack = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #ced4da;
+  border: 1px solid var(--color-border-strong);
   border-radius: 50%;
   font-size: 0.85rem;
 }
@@ -310,20 +310,20 @@ const goBack = () => {
 }
 
 .progress-step.active {
-  color: var(--app-primary);
+  color: var(--color-primary-text);
 }
 
 .progress-step.active span {
   color: #ffffff;
   background: var(--app-primary);
-  border-color: var(--app-primary);
+  border-color: var(--color-primary-text);
 }
 
 .progress-line {
   width: 50px;
   height: 1px;
   margin: 0 0.5rem 1rem;
-  background: #dee2e6;
+  background: var(--color-border);
 }
 
 .verification-code {
@@ -332,11 +332,11 @@ const goBack = () => {
 }
 
 .back-link {
-  color: #6c757d;
+  color: var(--color-text-secondary);
   text-decoration: none;
 }
 
 .back-link:hover {
-  color: #0d6efd;
+  color: var(--color-primary-text);
 }
 </style>

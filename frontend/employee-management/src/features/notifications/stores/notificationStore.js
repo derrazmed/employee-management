@@ -7,20 +7,23 @@ export const useNotificationStore = defineStore('notifications', () => {
   const notifications = ref([])
   const unreadCount = ref(0)
   const loading = ref(false)
+  const error = ref(false)
 
   let pollingInterval = null
 
   const fetchNotifications = async () => {
     try {
       loading.value = true
+      error.value = false
 
       const response = await notificationService.getNotifications()
 
       notifications.value = response.data || []
 
       unreadCount.value = notifications.value.filter((notification) => !notification.read).length
-    } catch (error) {
-      console.error('Failed to fetch notifications:', error)
+    } catch (err) {
+      error.value = true
+      console.error('Failed to fetch notifications:', err)
     } finally {
       loading.value = false
     }
@@ -36,12 +39,44 @@ export const useNotificationStore = defineStore('notifications', () => {
     }
   }
 
-  const handleRealtimeNotification = (notification) => {
+  /*
+   * Single entry point for adding a realtime notification to the list.
+   *
+   * Notifications are identified by id: an already known id is merged into the
+   * existing object instead of being inserted again, so we never create
+   * duplicates and never replace a full notification with a partial payload.
+   * Only a genuinely new, unread notification increases the unread count.
+   */
+  const addNotification = (notification) => {
+    if (!notification?.id) {
+      return
+    }
+
+    const existingIndex = notifications.value.findIndex((item) => item.id === notification.id)
+
+    if (existingIndex !== -1) {
+      Object.assign(notifications.value[existingIndex], notification)
+      return
+    }
+
     notifications.value.unshift(notification)
 
-    unreadCount.value++
+    if (!notification.read) {
+      unreadCount.value++
+    }
   }
 
+  const handleRealtimeNotification = (notification) => {
+    addNotification(notification)
+  }
+
+  /*
+   * Marks a notification as read.
+   *
+   * Only the `read` flag changes — every other field (message, details, actor,
+   * action, entityType, entityId, createdAt, ...) stays exactly as it is, so
+   * the list row and the already-open details modal keep the full content.
+   */
   const markAsRead = async (id) => {
     const notification = notifications.value.find((item) => item.id === id)
 
@@ -115,6 +150,7 @@ export const useNotificationStore = defineStore('notifications', () => {
   const reset = () => {
     notifications.value = []
     unreadCount.value = 0
+    error.value = false
     stopPolling()
   }
 
@@ -122,11 +158,7 @@ export const useNotificationStore = defineStore('notifications', () => {
     await fetchUnreadCount()
 
     notificationSocket.connect((notification) => {
-      notifications.value.unshift(notification)
-
-      if (!notification.read) {
-        unreadCount.value++
-      }
+      addNotification(notification)
     })
   }
 
@@ -138,6 +170,7 @@ export const useNotificationStore = defineStore('notifications', () => {
     notifications,
     unreadCount,
     loading,
+    error,
     fetchNotifications,
     fetchUnreadCount,
     handleRealtimeNotification,

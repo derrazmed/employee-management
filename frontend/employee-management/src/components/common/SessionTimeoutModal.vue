@@ -1,5 +1,6 @@
 <script setup>
 import { onUnmounted, ref, watch } from 'vue'
+import { ESCAPE_PRIORITY, useEscapeDismiss } from '@/composables/useEscapeDismiss'
 
 const props = defineProps({
   visible: {
@@ -26,6 +27,22 @@ const startCountdown = () => {
   }, 1000)
 }
 
+const stayLoggedIn = () => {
+  clearInterval(countdownTimer)
+  emit('stay-logged-in')
+}
+
+const logout = () => {
+  clearInterval(countdownTimer)
+  emit('logout')
+}
+
+useEscapeDismiss(
+  () => props.visible,
+  logout,
+  ESCAPE_PRIORITY.MODAL,
+)
+
 watch(
   () => props.visible,
   (visible) => {
@@ -36,16 +53,6 @@ watch(
     }
   },
 )
-
-const stayLoggedIn = () => {
-  clearInterval(countdownTimer)
-  emit('stay-logged-in')
-}
-
-const logout = () => {
-  clearInterval(countdownTimer)
-  emit('logout')
-}
 
 onUnmounted(() => {
   clearInterval(countdownTimer)
@@ -81,8 +88,8 @@ onUnmounted(() => {
   width: 100%;
   max-width: 440px;
   padding: 1.5rem;
-  border: 1px solid #e1e5eb;
-  background: #fff;
+  border: 1px solid var(--color-border);
+  background: var(--color-elevated);
   border-radius: 7px;
 
   text-align: center;
@@ -98,8 +105,8 @@ onUnmounted(() => {
   justify-content: center;
   margin-bottom: 0.75rem;
   border-radius: 50%;
-  background: #f1f4f8;
-  color: #526075;
+  background: var(--color-surface-muted);
+  color: var(--color-text-secondary);
   font-size: 1rem;
 }
 </style>

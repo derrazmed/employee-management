@@ -58,14 +58,14 @@ onBeforeUnmount(() => window.removeEventListener('resize', syncNavigation))
 }
 
 .main-content-inner {
-  width: min(100%, 1360px);
+  width: min(100%, 1240px);
   margin-inline: auto;
 }
 
 .mobile-nav-scrim { display: none; }
 
 @media (max-width: 767.98px) {
-  .mobile-nav-scrim { position: fixed; inset: 64px 0 0; z-index: 1010; display: block; width: 100%; padding: 0; border: 0; background: rgba(25, 30, 43, .28); }
+  .mobile-nav-scrim { position: fixed; inset: 64px 0 0; z-index: 1010; display: block; width: 100%; padding: 0; border: 0; background: var(--nav-scrim); }
   .main-content,
   .main-content.sidebar-collapsed {
     width: 100%;

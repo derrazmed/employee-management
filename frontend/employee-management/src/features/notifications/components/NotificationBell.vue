@@ -95,10 +95,10 @@ const closeNotificationDetails = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #e1e5eb;
+  border: 1px solid var(--color-border);
   border-radius: 7px;
-  background: #fff;
-  color: #465267;
+  background: var(--color-surface);
+  color: var(--color-text-body);
   font-size: 16px;
   cursor: pointer;
   transition:
@@ -107,8 +107,8 @@ const closeNotificationDetails = () => {
 }
 
 .notification-button:hover {
-  border-color: #cbd3de;
-  background: #f7f8fa;
+  border-color: var(--color-border-strong);
+  background: var(--color-surface-muted);
 }
 
 .notification-badge {
@@ -121,9 +121,9 @@ const closeNotificationDetails = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #fff;
+  border: 1px solid var(--color-surface);
   border-radius: 8px;
-  background: #dc3545;
+  background: var(--color-danger);
   color: #fff;
   font-size: 10px;
   font-weight: 600;

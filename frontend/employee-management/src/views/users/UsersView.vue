@@ -1,5 +1,6 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 import UserTable from '@/features/users/components/UserTable.vue'
 import UserFormModal from '@/features/users/components/UserFormModal.vue'
@@ -10,6 +11,8 @@ import UserDetailsModal from '@/features/users/components/UserDetailsModal.vue'
 import { useAuthStore } from '@/features/auth/stores/authStore'
 
 const authStore = useAuthStore()
+const route = useRoute()
+const router = useRouter()
 
 const showUserDetails = ref(false)
 const selectedUserId = ref(null)
@@ -45,6 +48,21 @@ const openCreate = () => {
   selectedUser.value = null
   showUserForm.value = true
 }
+
+watch(
+  () => route.query.create,
+  (value) => {
+    if (value) {
+      openCreate()
+
+      router.replace({
+        path: '/users',
+        query: {},
+      })
+    }
+  },
+  { immediate: true },
+)
 
 const openEdit = (user) => {
   selectedUser.value = user
@@ -96,7 +114,7 @@ const toggleUserStatus = async (user) => {
         <span class="page-kicker">Access control</span>
         <h1>Users</h1>
 
-        <p>Manage application users and their permissions.</p>
+        <p>Manage accounts, access levels, and permissions.</p>
       </div>
 
       <button v-if="isSuperAdmin" class="btn btn-primary" @click="openCreate">
@@ -108,6 +126,7 @@ const toggleUserStatus = async (user) => {
     <UserTable
       :is-super-admin="isSuperAdmin"
       ref="userTable"
+      @create="openCreate"
       @edit="openEdit"
       @permissions="openPermissions"
       @view="openView"

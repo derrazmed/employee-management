@@ -91,17 +91,17 @@ const updateValue = (event) => {
   border: 0;
   border-radius: 5px;
   background: transparent;
-  color: #687385;
+  color: var(--color-text-secondary);
   cursor: pointer;
   transition: color 140ms ease;
 }
 
 .password-visibility-toggle:hover:not(:disabled) {
-  color: #344054;
+  color: var(--color-text-body);
 }
 
 .password-visibility-toggle:focus-visible {
-  outline: 2px solid rgba(36, 87, 166, 0.5);
+  outline: 2px solid var(--color-primary-text);
   outline-offset: -3px;
 }
 

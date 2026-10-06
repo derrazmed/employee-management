@@ -23,7 +23,7 @@
 
   padding: 2rem;
 
-  background-color: #ffffff;
+  background-color: var(--color-surface);
 
   border: 1px solid var(--app-border);
   border-radius: var(--app-radius);

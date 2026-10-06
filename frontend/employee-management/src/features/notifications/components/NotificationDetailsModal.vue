@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue'
+import { ESCAPE_PRIORITY, useEscapeDismiss } from '@/composables/useEscapeDismiss'
 
 const props = defineProps({
   show: {
@@ -31,6 +32,16 @@ const actionLabel = computed(() => {
 
   return props.notification.action
 })
+
+const closeModal = () => {
+  emit('close')
+}
+
+useEscapeDismiss(
+  () => props.show && props.notification,
+  closeModal,
+  ESCAPE_PRIORITY.MODAL,
+)
 </script>
 
 <template>
@@ -39,7 +50,6 @@ const actionLabel = computed(() => {
       v-if="show && notification"
       class="notification-modal-backdrop"
       @click.self="emit('close')"
-      @keydown.esc.stop.prevent="emit('close')"
       tabindex="-1"
     >
       <dialog
@@ -144,9 +154,9 @@ const actionLabel = computed(() => {
   max-height: calc(100vh - 2rem);
   flex-direction: column;
   overflow: hidden;
-  border: 1px solid #dee2e6;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
-  background: #fff;
+  background: var(--color-elevated);
   box-shadow: 0 1rem 2rem rgba(24, 32, 40, 0.16);
 }
 
@@ -157,12 +167,12 @@ const actionLabel = computed(() => {
   justify-content: space-between;
   gap: 1rem;
   padding: 1.125rem 1.5rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--color-border-soft);
 }
 
 .notification-dialog-header h2 {
   margin: 0;
-  color: #1f2937;
+  color: var(--color-text);
   font-size: 1.2rem;
   font-weight: 650;
 }
@@ -183,7 +193,7 @@ const actionLabel = computed(() => {
 
 .notification-field h3 {
   margin: 0 0 0.35rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -192,7 +202,7 @@ const actionLabel = computed(() => {
 
 .notification-field p {
   margin: 0;
-  color: #1f2937;
+  color: var(--color-text);
   line-height: 1.5;
   overflow-wrap: break-word;
 }
@@ -202,15 +212,15 @@ const actionLabel = computed(() => {
   flex: 0 0 auto;
   justify-content: flex-end;
   padding: 0.875rem 1.5rem;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--color-border-soft);
 }
 
 .notification-details {
   white-space: pre-wrap;
   overflow-wrap: break-word;
   word-break: normal;
-  background: #f7f8fa;
-  border: 1px solid #e5e7eb;
+  background: var(--color-surface-muted);
+  border: 1px solid var(--color-border-soft);
   border-radius: 6px;
   padding: 0.75rem;
   line-height: 1.5;

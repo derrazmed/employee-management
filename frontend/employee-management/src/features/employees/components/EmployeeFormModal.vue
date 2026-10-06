@@ -2,6 +2,8 @@
 import { computed, ref, watch } from 'vue'
 import { employeeService } from '../services/employeeService'
 import { useAuthStore } from '@/features/auth/stores/authStore'
+import { ESCAPE_PRIORITY, useEscapeDismiss } from '@/composables/useEscapeDismiss'
+import FileUploadField from '@/components/common/FileUploadField.vue'
 
 const authStore = useAuthStore()
 
@@ -49,6 +51,16 @@ const canUploadFiles = computed(() => authStore.hasPermission('UPDATE'))
 const modalTitle = computed(() => {
   return isEdit.value ? 'Edit Employee' : 'Create Employee'
 })
+
+const closeModal = () => {
+  if (loading.value) {
+    return
+  }
+
+  emit('close')
+}
+
+useEscapeDismiss(() => props.show && canManageEmployee.value, closeModal, ESCAPE_PRIORITY.MODAL)
 
 const resetForm = () => {
   form.value = {
@@ -107,20 +119,12 @@ watch(
   },
 )
 
-const handlePhotoChange = (event) => {
-  photoFile.value = event.target.files[0] || null
+const removePhoto = () => {
+  photoFile.value = null
 }
 
-const handleCvChange = (event) => {
-  cvFile.value = event.target.files[0] || null
-}
-
-const closeModal = () => {
-  if (loading.value) {
-    return
-  }
-
-  emit('close')
+const removeCv = () => {
+  cvFile.value = null
 }
 
 const submitForm = async () => {
@@ -389,34 +393,30 @@ const submitForm = async () => {
             <div class="row g-3">
               <!-- Photo -->
               <div v-if="canUploadFiles" class="col-md-6">
-                <label for="photo" class="form-label"> Employee Photo </label>
-
-                <input
-                  id="photo"
-                  type="file"
-                  class="form-control"
+                <FileUploadField
+                  v-model="photoFile"
+                  label="Employee Photo"
+                  icon="bi-image"
                   accept="image/*"
+                  hint="JPG, PNG, WEBP"
+                  :existing-file="props.employee"
                   :disabled="loading"
-                  @change="handlePhotoChange"
+                  @remove="removePhoto"
                 />
-
-                <div class="form-text">JPG, PNG, WEBP, etc.</div>
               </div>
 
               <!-- CV -->
               <div v-if="canUploadFiles" class="col-md-6">
-                <label for="cv" class="form-label"> CV </label>
-
-                <input
-                  id="cv"
-                  type="file"
-                  class="form-control"
+                <FileUploadField
+                  v-model="cvFile"
+                  label="CV"
+                  icon="bi-file-earmark-text"
                   accept=".pdf,.doc,.docx"
+                  hint="PDF, DOC, DOCX"
+                  :existing-file="props.employee"
                   :disabled="loading"
-                  @change="handleCvChange"
+                  @remove="removeCv"
                 />
-
-                <div class="form-text">PDF, DOC, DOCX</div>
               </div>
             </div>
           </form>
@@ -450,5 +450,209 @@ const submitForm = async () => {
 </template>
 
 <style scoped>
-.modal-title i { color: var(--app-primary); }.modal-body h6 { margin-top: .15rem; color: #526075; font-size: .72rem; font-weight: 700 !important; letter-spacing: .07em; text-transform: uppercase; }.modal-body hr { margin-block: 1.75rem !important; border-color: var(--app-border); opacity: 1; }.modal-footer { justify-content: flex-end; gap: .5rem; }.modal-footer .btn { min-width: 112px; }
+/* Modal header */
+.modal-title i {
+  color: var(--color-primary-text);
+}
+
+/* Section headings */
+.modal-body h6 {
+  margin-top: 0.15rem;
+  margin-bottom: 1rem;
+  color: var(--color-text-secondary);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+/* Section dividers */
+.modal-body hr {
+  margin-block: 1.5rem;
+  border-color: var(--app-border);
+  opacity: 1;
+}
+
+/* Form labels */
+.modal-body .form-label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-text);
+  margin-bottom: 0.5rem;
+}
+
+.modal-body .form-label .text-danger {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Form inputs - unified height and styling */
+.modal-body .form-control {
+  height: 40px;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 0.875rem;
+  font-weight: 400;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.modal-body .form-control::placeholder {
+  color: var(--color-text-tertiary);
+  opacity: 1;
+}
+
+.modal-body .form-control:hover:not(:disabled):not([readonly]) {
+  border-color: var(--color-border-strong);
+  background: var(--color-hover);
+}
+
+.modal-body .form-control:focus {
+  border-color: var(--color-primary-border);
+  box-shadow: 0 0 0 3px var(--color-primary-soft);
+  outline: none;
+}
+
+.modal-body .form-control:disabled,
+.modal-body .form-control[readonly] {
+  background: var(--color-surface-muted);
+  color: var(--color-text-secondary);
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+/* Date input specific styling to match other inputs */
+.modal-body input[type='date'].form-control {
+  padding-inline-end: 36px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'%3E%3C/rect%3E%3Cline x1='16' y1='2' x2='16' y2='6'%3E%3C/line%3E%3Cline x1='8' y1='2' x2='8' y2='6'%3E%3C/line%3E%3Cline x1='3' y1='10' x2='21' y2='10'%3E%3C/line%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+  cursor: pointer;
+}
+
+/* Number input (salary) */
+.modal-body input[type='number'].form-control {
+  text-align: left;
+}
+
+/* Error state for form controls */
+.modal-body .form-control.is-invalid,
+.modal-body .was-validated .form-control:invalid {
+  border-color: var(--color-danger-border);
+  background-image: none;
+}
+
+.modal-body .form-control.is-invalid:focus,
+.modal-body .was-validated .form-control:invalid:focus {
+  box-shadow: 0 0 0 3px var(--color-danger-soft);
+}
+
+/* Validation error messages */
+.modal-body .invalid-feedback,
+.modal-body .form-text.text-danger {
+  display: block;
+  margin-top: 0.375rem;
+  font-size: 0.75rem;
+  color: var(--color-danger-text);
+}
+
+/* Helper text */
+.modal-body .form-text {
+  margin-top: 0.375rem;
+  font-size: 0.75rem;
+  color: var(--color-text-tertiary);
+}
+
+/* Align FileUploadField trigger with form-control height */
+.modal-body :deep(.file-upload-trigger) {
+  min-height: 40px;
+  height: 40px;
+}
+
+/* Modal footer */
+.modal-footer {
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  border-top: 1px solid var(--app-border);
+}
+
+.modal-footer .btn {
+  height: 40px;
+  min-width: 112px;
+  padding: 0 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.modal-footer .btn .spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+.modal-footer .btn-secondary {
+  border-color: var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.modal-footer .btn-secondary:hover:not(:disabled) {
+  border-color: var(--color-border-strong);
+  background: var(--color-hover);
+  color: var(--color-text);
+}
+
+.modal-footer .btn-primary {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+
+.modal-footer .btn-primary:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+}
+
+.modal-footer .btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.modal-footer .btn:focus-visible {
+  outline: 2px solid var(--color-primary-text);
+  outline-offset: 2px;
+}
+
+/* Modal content spacing */
+.modal-body {
+  padding: 1.5rem;
+}
+
+/* Row spacing */
+.modal-body .row.g-3 > [class*='col-'] {
+  padding-bottom: 0.5rem;
+}
+
+@media (max-width: 575.98px) {
+  .modal-body {
+    padding: 1rem;
+  }
+
+  .modal-body .row.g-3 > [class*='col-'] {
+    padding-bottom: 0;
+  }
+}
 </style>

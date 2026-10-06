@@ -1,5 +1,6 @@
 package com.employeemanagement.service;
 
+import com.employeemanagement.dto.employee.EmployeeFiltersResponse;
 import com.employeemanagement.dto.employee.EmployeePhoto;
 import com.employeemanagement.dto.employee.EmployeeRequest;
 import com.employeemanagement.dto.employee.EmployeeResponse;
@@ -65,6 +66,8 @@ public class EmployeeService {
 
     public Page<EmployeeResponse> getEmployees(
             String search,
+            String department,
+            String jobTitle,
             Pageable pageable
     ) {
 
@@ -72,25 +75,43 @@ public class EmployeeService {
                 com.employeemanagement.entity.Permission.READ
         );
 
+        String searchValue = search == null ? "" : search;
+        String departmentValue = department == null ? "" : department;
+        String jobTitleValue = jobTitle == null ? "" : jobTitle;
+
+        boolean hasSearch = !searchValue.trim().isEmpty();
+        boolean hasFilters = !departmentValue.isEmpty() || !jobTitleValue.isEmpty();
+
         Page<Employee> employees;
 
-        if (search == null || search.trim().isEmpty()) {
+        if (!hasSearch && !hasFilters) {
 
             employees = employeeRepository.findAll(pageable);
 
         } else {
 
             employees =
-                    employeeRepository
-                            .findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCaseOrEmailContainingIgnoreCase(
-                                    search,
-                                    search,
-                                    search,
-                                    pageable
-                            );
+                    employeeRepository.search(
+                            searchValue,
+                            departmentValue,
+                            jobTitleValue,
+                            pageable
+                    );
         }
 
         return employees.map(this::mapToResponse);
+    }
+
+    public EmployeeFiltersResponse getEmployeeFilters() {
+
+        permissionService.requirePermission(
+                com.employeemanagement.entity.Permission.READ
+        );
+
+        return new EmployeeFiltersResponse(
+                employeeRepository.findDistinctDepartments(),
+                employeeRepository.findDistinctJobTitles()
+        );
     }
 
     public EmployeeResponse getEmployee(Long id) {

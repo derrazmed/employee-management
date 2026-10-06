@@ -4,6 +4,7 @@ import LoginView from '@/views/auth/LoginView.vue'
 import RegisterView from '@/views/auth/RegisterView.vue'
 import ForgotPasswordView from '@/views/auth/ForgotPasswordView.vue'
 import DashboardLayout from '@/layout/DashboardLayout.vue'
+import DashboardView from '@/views/dashboard/DashboardView.vue'
 import UsersView from '@/views/users/UsersView.vue'
 import EmployeesView from '@/views/employees/EmployeesView.vue'
 
@@ -49,7 +50,13 @@ const router = createRouter({
       children: [
         {
           path: '',
-          redirect: '/employees',
+          redirect: '/dashboard',
+        },
+
+        {
+          path: 'dashboard',
+          name: 'dashboard',
+          component: DashboardView,
         },
 
         {
@@ -86,7 +93,7 @@ router.beforeEach((to) => {
 
   if (to.meta.guest && isAuthenticated) {
     return {
-      path: '/employees',
+      path: '/dashboard',
     }
   }
 

@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { userService } from '@/features/users/services/userService'
+import { ESCAPE_PRIORITY, useEscapeDismiss } from '@/composables/useEscapeDismiss'
 
 const props = defineProps({
   show: {
@@ -22,6 +23,18 @@ const selectedPermissions = ref([])
 
 const saving = ref(false)
 const error = ref('')
+
+const closeModal = () => {
+  if (!saving.value) {
+    emit('close')
+  }
+}
+
+useEscapeDismiss(
+  () => props.show,
+  closeModal,
+  ESCAPE_PRIORITY.MODAL,
+)
 
 watch(
   () => props.user,
@@ -134,5 +147,5 @@ const savePermissions = async () => {
 </template>
 
 <style scoped>
-.permission-option { display: flex; min-height: 48px; align-items: center; padding: .75rem; border-bottom: 1px solid var(--app-border); }.permission-option:first-of-type { border-top: 1px solid var(--app-border); }.permission-option .form-check-input { margin-right: .7rem; }.permission-option .form-check-label { color: #344054; font-size: .85rem; font-weight: 600; letter-spacing: .02em; }.card-header small { display: block; margin-top: .15rem; }.card-footer { gap: .5rem; }
+.permission-option { display: flex; min-height: 48px; align-items: center; padding: .75rem; border-bottom: 1px solid var(--app-border); }.permission-option:first-of-type { border-top: 1px solid var(--app-border); }.permission-option .form-check-input { margin-right: .7rem; }.permission-option .form-check-label { color: var(--color-text-body); font-size: .85rem; font-weight: 600; letter-spacing: .02em; }.card-header small { display: block; margin-top: .15rem; }.card-footer { gap: .5rem; }
 </style>

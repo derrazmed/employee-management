@@ -9,8 +9,8 @@
         "baseURL": "http://127.0.0.1:11434/v1"
       },
       "models": {
-        "qwen2.5-coder:3b": {
-          "name": "Qwen 2.5 Coder 3B"
+        "hhao/qwen2.5-coder-tools:3b": {
+          "name": "Qwen 2.5 Coder Tools 3B"
         }
       }
     }
